@@ -31,23 +31,37 @@ export const courseService = {
         return [];
       }
 
-      // Transform data to match UI expectations
-      return response.data.map(course => ({
-        Id: course.Id,
-        name: course.name_c || course.Name || '',
-        code: course.code_c || '',
-        instructor: course.instructor_c || '',
-        credits: course.credits_c || 3,
-        color: course.color_c || '#4F46E5',
-        schedule: course.schedule_c ? course.schedule_c.split(',').map(s => s.trim()) : [],
-        currentGrade: course.current_grade_c || 0,
-        gradeCategories: course.grade_categories_c ? JSON.parse(course.grade_categories_c) : [
+// Transform data to match UI expectations
+      return response.data.map(course => {
+        let gradeCategories = [
           { name: "Exams", weight: 40 },
           { name: "Assignments", weight: 35 },
           { name: "Participation", weight: 15 },
           { name: "Projects", weight: 10 }
-        ]
-      }));
+        ];
+
+        if (course.grade_categories_c) {
+          try {
+            gradeCategories = JSON.parse(course.grade_categories_c);
+          } catch (error) {
+            console.error(`Failed to parse grade_categories_c for course ${course.Id}:`, error.message);
+            console.error('Raw data:', course.grade_categories_c);
+            // Keep default categories on parse error
+          }
+        }
+
+        return {
+          Id: course.Id,
+          name: course.name_c || course.Name || '',
+          code: course.code_c || '',
+          instructor: course.instructor_c || '',
+          credits: course.credits_c || 3,
+          color: course.color_c || '#4F46E5',
+          schedule: course.schedule_c ? course.schedule_c.split(',').map(s => s.trim()) : [],
+          currentGrade: course.current_grade_c || 0,
+          gradeCategories
+        };
+      });
     } catch (error) {
       console.error("Error fetching courses:", error?.response?.data?.message || error);
       return [];
@@ -85,8 +99,16 @@ export const courseService = {
         credits: course.credits_c || 3,
         color: course.color_c || '#4F46E5',
         schedule: course.schedule_c ? course.schedule_c.split(',').map(s => s.trim()) : [],
-        currentGrade: course.current_grade_c || 0,
-        gradeCategories: course.grade_categories_c ? JSON.parse(course.grade_categories_c) : []
+currentGrade: course.current_grade_c || 0,
+        gradeCategories: (() => {
+          if (!course.grade_categories_c) return [];
+          try {
+            return JSON.parse(course.grade_categories_c);
+          } catch (error) {
+            console.error(`Failed to parse grade_categories_c for course ${course.Id}:`, error.message);
+            return [];
+          }
+        })()
       };
     } catch (error) {
       console.error(`Error fetching course with ID ${id}:`, error?.response?.data?.message || error);
@@ -134,8 +156,16 @@ export const courseService = {
             credits: newCourse.credits_c || 3,
             color: newCourse.color_c || '#4F46E5',
             schedule: newCourse.schedule_c ? newCourse.schedule_c.split(',').map(s => s.trim()) : [],
-            currentGrade: newCourse.current_grade_c || 0,
-            gradeCategories: newCourse.grade_categories_c ? JSON.parse(newCourse.grade_categories_c) : []
+currentGrade: newCourse.current_grade_c || 0,
+            gradeCategories: (() => {
+              if (!newCourse.grade_categories_c) return [];
+              try {
+                return JSON.parse(newCourse.grade_categories_c);
+              } catch (error) {
+                console.error(`Failed to parse grade_categories_c for new course ${newCourse.Id}:`, error.message);
+                return [];
+              }
+            })()
           };
         }
       }
@@ -181,8 +211,16 @@ export const courseService = {
             credits: updatedCourse.credits_c || 3,
             color: updatedCourse.color_c || '#4F46E5',
             schedule: updatedCourse.schedule_c ? updatedCourse.schedule_c.split(',').map(s => s.trim()) : [],
-            currentGrade: updatedCourse.current_grade_c || 0,
-            gradeCategories: updatedCourse.grade_categories_c ? JSON.parse(updatedCourse.grade_categories_c) : []
+currentGrade: updatedCourse.current_grade_c || 0,
+            gradeCategories: (() => {
+              if (!updatedCourse.grade_categories_c) return [];
+              try {
+                return JSON.parse(updatedCourse.grade_categories_c);
+              } catch (error) {
+                console.error(`Failed to parse grade_categories_c for updated course ${updatedCourse.Id}:`, error.message);
+                return [];
+              }
+            })()
           };
         }
       }
@@ -240,8 +278,16 @@ export const courseService = {
             credits: updatedCourse.credits_c || 3,
             color: updatedCourse.color_c || '#4F46E5',
             schedule: updatedCourse.schedule_c ? updatedCourse.schedule_c.split(',').map(s => s.trim()) : [],
-            currentGrade: updatedCourse.current_grade_c || 0,
-            gradeCategories: updatedCourse.grade_categories_c ? JSON.parse(updatedCourse.grade_categories_c) : []
+currentGrade: updatedCourse.current_grade_c || 0,
+            gradeCategories: (() => {
+              if (!updatedCourse.grade_categories_c) return [];
+              try {
+                return JSON.parse(updatedCourse.grade_categories_c);
+              } catch (error) {
+                console.error(`Failed to parse grade_categories_c in updateGrade for course ${updatedCourse.Id}:`, error.message);
+                return [];
+              }
+            })()
           };
         }
       }
