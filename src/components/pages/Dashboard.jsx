@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from "react";
-import Card from "@/components/atoms/Card";
-import Button from "@/components/atoms/Button";
-import GradeProgress from "@/components/molecules/GradeProgress";
-import StatusBadge from "@/components/molecules/StatusBadge";
-import QuickAddButton from "@/components/organisms/QuickAddButton";
-import CourseModal from "@/components/organisms/CourseModal";
-import AssignmentModal from "@/components/organisms/AssignmentModal";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
-import ApperIcon from "@/components/ApperIcon";
+import React, { useEffect, useState } from "react";
 import { useCourses } from "@/hooks/useCourses";
 import { useAssignments } from "@/hooks/useAssignments";
-import { format, isToday, isAfter } from "date-fns";
+import { format, isAfter, isToday } from "date-fns";
+import ApperIcon from "@/components/ApperIcon";
+import Card from "@/components/atoms/Card";
+import Button from "@/components/atoms/Button";
+import AssignmentModal from "@/components/organisms/AssignmentModal";
+import QuickAddButton from "@/components/organisms/QuickAddButton";
+import CourseModal from "@/components/organisms/CourseModal";
+import Assignments from "@/components/pages/Assignments";
+import Courses from "@/components/pages/Courses";
+import Loading from "@/components/ui/Loading";
+import Error from "@/components/ui/Error";
+import GradeProgress from "@/components/molecules/GradeProgress";
+import StatusBadge from "@/components/molecules/StatusBadge";
 
 const Dashboard = () => {
   const { courses, loading: coursesLoading, error: coursesError } = useCourses();
@@ -27,12 +29,12 @@ const Dashboard = () => {
       const today = new Date();
       const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-      const todaysTasksList = assignments.filter(assignment => {
+const todaysTasksList = assignments.filter(assignment => {
         const dueDate = new Date(assignment.dueDate);
         return isToday(dueDate) && assignment.status !== "completed";
       });
 
-      const upcomingList = assignments.filter(assignment => {
+const upcomingList = assignments.filter(assignment => {
         const dueDate = new Date(assignment.dueDate);
         return dueDate > today && dueDate <= nextWeek && assignment.status !== "completed";
       }).sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate)).slice(0, 5);
@@ -52,7 +54,7 @@ const Dashboard = () => {
 
   const calculateOverallGPA = () => {
     if (courses.length === 0) return 0;
-    const totalCredits = courses.reduce((sum, course) => sum + course.credits, 0);
+const totalCredits = courses.reduce((sum, course) => sum + course.credits, 0);
     const weightedGrades = courses.reduce((sum, course) => {
       const gradePoints = getGradePoints(course.currentGrade || 0);
       return sum + (gradePoints * course.credits);
@@ -76,7 +78,7 @@ const Dashboard = () => {
   };
 
   const getOverdueCount = () => {
-    return assignments.filter(assignment => {
+return assignments.filter(assignment => {
       const dueDate = new Date(assignment.dueDate);
       return isAfter(new Date(), dueDate) && assignment.status !== "completed";
     }).length;
@@ -185,14 +187,14 @@ const Dashboard = () => {
                 {todaysTasks.map((task) => {
                   const course = getCourseById(task.courseId);
                   return (
-                    <div key={task.Id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+<div key={task.Id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
                       <button
                         onClick={() => handleToggleTask(task.Id, "completed")}
                         className="p-1 rounded-full text-gray-400 hover:text-success-500 transition-colors mt-0.5"
                       >
                         <ApperIcon name="Circle" size={16} />
                       </button>
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1">
                         <p className="font-medium text-gray-900 truncate">{task.title}</p>
                         <div className="flex items-center space-x-2 mt-1">
                           {course && (
@@ -237,7 +239,7 @@ const Dashboard = () => {
                 {upcomingAssignments.map((assignment) => {
                   const course = getCourseById(assignment.courseId);
                   return (
-                    <div key={assignment.Id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+<div key={assignment.Id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div className="flex-1">
                         <p className="font-medium text-gray-900">{assignment.title}</p>
                         <div className="flex items-center space-x-2 mt-1">
@@ -287,12 +289,11 @@ const Dashboard = () => {
         <Card.Content>
           {courses.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {courses.map((course) => {
+{courses.map((course) => {
                 const courseAssignments = assignments.filter(a => a.courseId === course.Id);
                 const upcomingCount = courseAssignments.filter(a => 
                   new Date(a.dueDate) > new Date() && a.status !== "completed"
                 ).length;
-                
                 return (
                   <div key={course.Id} className="p-4 bg-gray-50 rounded-lg">
                     <div className="flex items-start justify-between mb-3">

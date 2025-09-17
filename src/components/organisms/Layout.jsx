@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import { cn } from "@/utils/cn";
+import { AuthContext } from "../../App";
 
 const Layout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { logout } = useContext(AuthContext);
 
   const navigation = [
     { name: "Dashboard", href: "/", icon: "LayoutDashboard" },
@@ -59,7 +61,16 @@ const Layout = () => {
             ))}
           </nav>
           
-          <div className="p-4 border-t border-gray-200">
+<div className="p-4 border-t border-gray-200 space-y-3">
+            <Button
+              onClick={logout}
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+            >
+              <ApperIcon name="LogOut" size={16} className="mr-2" />
+              Logout
+            </Button>
             <div className="text-xs text-gray-500 text-center">
               Academic Year 2024-25
             </div>

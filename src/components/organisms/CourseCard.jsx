@@ -44,7 +44,7 @@ const CourseCard = ({ course, upcomingCount, onClick }) => {
               <ApperIcon name="Clock" size={14} className="mr-1" />
               <span>{upcomingCount} upcoming</span>
             </div>
-            {course.schedule && course.schedule.length > 0 && (
+{course.schedule && Array.isArray(course.schedule) && course.schedule.length > 0 && (
               <Badge variant="default" className="text-xs">
                 {course.schedule[0]}
               </Badge>
